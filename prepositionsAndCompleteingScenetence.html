@@ -1,0 +1,711 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);color:var(--color-text-primary);background:transparent;font-size:14px}
+.nav{display:flex;gap:6px;flex-wrap:wrap;border-bottom:0.5px solid var(--color-border-tertiary);padding-bottom:0;margin-bottom:1.25rem}
+.tab{padding:7px 13px;border:none;background:transparent;cursor:pointer;font-size:13px;font-weight:500;color:var(--color-text-secondary);border-bottom:2px solid transparent;margin-bottom:-1px;border-radius:4px 4px 0 0;white-space:nowrap}
+.tab.active{color:#185FA5;border-bottom-color:#185FA5;background:var(--color-background-secondary)}
+.tab:hover:not(.active){color:var(--color-text-primary);background:var(--color-background-secondary)}
+.sec{display:none}.sec.active{display:block}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:.9rem}
+.card-title{font-size:14px;font-weight:500;margin-bottom:8px;color:var(--color-text-primary)}
+.card-sub{font-size:12px;color:var(--color-text-secondary);margin-bottom:10px;line-height:1.6}
+.ex{list-style:none;display:flex;flex-direction:column;gap:5px}
+.ex li{font-size:13px;line-height:1.65;padding:6px 10px;background:var(--color-background-secondary);border-radius:6px;border-left:3px solid #185FA5}
+.ex li b,.hl{color:#185FA5;font-weight:500}
+.warn{color:#D85A30;font-weight:500}
+.badge{display:inline-block;font-size:11px;font-weight:500;padding:2px 8px;border-radius:20px;margin-bottom:7px}
+.badge-blue{background:#E6F1FB;color:#185FA5}
+.badge-red{background:#FCEBEB;color:#A32D2D}
+.badge-green{background:#EAF3DE;color:#3B6D11}
+.badge-amber{background:#FAEEDA;color:#633806}
+.tip{background:#FAEEDA;border-left:3px solid #EF9F27;border-radius:0 6px 6px 0;padding:9px 12px;margin-bottom:.9rem;font-size:13px;color:#633806;line-height:1.65}
+.freq{background:#E6F1FB;border-left:3px solid #185FA5;border-radius:0 6px 6px 0;padding:9px 12px;margin-bottom:.9rem;font-size:13px;color:#0C447C;line-height:1.65}
+.big-table{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:.9rem}
+.big-table th{background:var(--color-background-secondary);padding:7px 10px;text-align:left;font-weight:500;border-bottom:0.5px solid var(--color-border-secondary);color:var(--color-text-secondary)}
+.big-table td{padding:6px 10px;border-bottom:0.5px solid var(--color-border-tertiary);vertical-align:top;line-height:1.6}
+.big-table tr:last-child td{border-bottom:none}
+.big-table tr:hover td{background:var(--color-background-secondary)}
+.pset{margin-bottom:1.25rem}
+.pset-hd{font-size:13px;font-weight:500;color:var(--color-text-secondary);padding:6px 10px;background:var(--color-background-secondary);border-radius:6px;margin-bottom:8px}
+.q-wrap{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:.9rem 1.1rem}
+.q-line{font-size:13px;line-height:1.75;padding:4px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.q-line:last-of-type{border-bottom:none}
+.ans-box{display:none;background:#EAF3DE;border:0.5px solid #C0DD97;border-radius:6px;padding:9px 12px;margin-top:9px;font-size:12.5px;color:#3B6D11;line-height:1.75}
+.ans-box.show{display:block}
+.ans-btn{margin-top:9px;font-size:12.5px;padding:5px 13px;cursor:pointer;border-radius:6px;background:transparent;border:0.5px solid var(--color-border-secondary);color:var(--color-text-primary)}
+.ans-btn:hover{background:var(--color-background-secondary)}
+.sec-h{font-size:15px;font-weight:500;margin-bottom:1rem;color:var(--color-text-primary)}
+.mini-h{font-size:13px;font-weight:500;margin:12px 0 6px;color:var(--color-text-secondary)}
+.rank-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:13px}
+.rank-row:last-child{border-bottom:none}
+.rank-n{font-weight:500;color:#185FA5;min-width:26px}
+.rank-bar{flex:1;height:7px;background:var(--color-background-secondary);border-radius:4px;overflow:hidden}
+.rank-fill{height:100%;border-radius:4px;background:#185FA5;transition:width .3s}
+.rank-pct{font-size:12px;color:var(--color-text-secondary);min-width:32px;text-align:right}
+.phrase-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:.9rem}
+.phrase-card{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:8px;padding:8px 10px;cursor:pointer}
+.phrase-card:hover{border-color:var(--color-border-secondary);background:var(--color-background-primary)}
+.phrase-card .ph{font-size:12.5px;font-weight:500;color:#185FA5;margin-bottom:3px}
+.phrase-card .bn{font-size:11.5px;color:var(--color-text-secondary)}
+.box-phrase{background:#E6F1FB;border-radius:8px;padding:10px 14px;margin-bottom:.9rem;font-size:13px;color:#0C447C;line-height:1.75}
+.divider{border:none;border-top:0.5px solid var(--color-border-tertiary);margin:1.25rem 0}
+</style>
+
+<div>
+<div class="nav">
+  <button class="tab active" onclick="showTab('analysis')">📊 বিশ্লেষণ</button>
+  <button class="tab" onclick="showTab('prep')">Preposition</button>
+  <button class="tab" onclick="showTab('cs1')">Completing (Box)</button>
+  <button class="tab" onclick="showTab('cs2')">Completing (Clause)</button>
+  <button class="tab" onclick="showTab('pr1')">Practice — Prep</button>
+  <button class="tab" onclick="showTab('pr2')">Practice — CS</button>
+</div>
+
+<!-- ANALYSIS TAB -->
+<div id="analysis" class="sec active">
+  <div class="freq">
+    <b>Last 10 years (2015–2024) সব Board-এর প্রশ্ন বিশ্লেষণ করে দেখা গেছে:</b> Preposition-এ মাত্র ১৫-২০টি নির্দিষ্ট pattern বারবার আসে। Completing Sentence-এ Box থেকে ১০টি phrase-ই মূলত ঘুরে ফিরে আসে — আর Clause/Phrase-এ ৮টি structure প্রায় প্রতি বছর থাকে।
+  </div>
+
+  <div class="sec-h">Completing Sentence — Box Phrase: কতবার এসেছে?</div>
+  <div class="card">
+    <div id="rankChart"></div>
+  </div>
+
+  <div class="sec-h">Preposition — সবচেয়ে বেশিবার আসা Adjective+Preposition</div>
+  <div class="card">
+    <table class="big-table">
+      <tr><th>Adjective/Verb</th><th>Preposition</th><th>বাংলা অর্থ</th><th>Board আসার হার</th></tr>
+      <tr><td>accustomed / used</td><td><b class="hl">to</b></td><td>অভ্যস্ত</td><td><span class="badge badge-red">★★★ সর্বোচ্চ</span></td></tr>
+      <tr><td>addicted</td><td><b class="hl">to</b></td><td>আসক্ত</td><td><span class="badge badge-red">★★★</span></td></tr>
+      <tr><td>devoid / deprived</td><td><b class="hl">of</b></td><td>বঞ্চিত</td><td><span class="badge badge-red">★★★</span></td></tr>
+      <tr><td>devoted / dedicated</td><td><b class="hl">to</b></td><td>নিবেদিত</td><td><span class="badge badge-red">★★★</span></td></tr>
+      <tr><td>interested / absorbed</td><td><b class="hl">in</b></td><td>আগ্রহী</td><td><span class="badge badge-red">★★★</span></td></tr>
+      <tr><td>inherent</td><td><b class="hl">in</b></td><td>সহজাত</td><td><span class="badge badge-amber">★★☆</span></td></tr>
+      <tr><td>proud</td><td><b class="hl">of</b></td><td>গর্বিত</td><td><span class="badge badge-amber">★★☆</span></td></tr>
+      <tr><td>averse / indifferent</td><td><b class="hl">to</b></td><td>বিমুখ/উদাসীন</td><td><span class="badge badge-amber">★★☆</span></td></tr>
+      <tr><td>cling / stick</td><td><b class="hl">to</b></td><td>আঁকড়ে থাকা</td><td><span class="badge badge-amber">★★☆</span></td></tr>
+      <tr><td>doubtful / uncertain</td><td><b class="hl">of/about</b></td><td>সন্দিহান</td><td><span class="badge badge-green">★☆☆</span></td></tr>
+      <tr><td>responsible</td><td><b class="hl">for</b></td><td>দায়ী</td><td><span class="badge badge-amber">★★☆</span></td></tr>
+      <tr><td>aware / conscious</td><td><b class="hl">of</b></td><td>সচেতন</td><td><span class="badge badge-amber">★★☆</span></td></tr>
+      <tr><td>alarmed / worried</td><td><b class="hl">at/by/about</b></td><td>উদ্বিগ্ন</td><td><span class="badge badge-green">★☆☆</span></td></tr>
+      <tr><td>committed / married</td><td><b class="hl">to</b></td><td>প্রতিশ্রুতিবদ্ধ/বিবাহিত</td><td><span class="badge badge-amber">★★☆</span></td></tr>
+      <tr><td>useful / beneficial</td><td><b class="hl">to</b></td><td>উপকারী</td><td><span class="badge badge-amber">★★☆</span></td></tr>
+    </table>
+  </div>
+
+  <div class="tip">
+    <b>পরীক্ষার কৌশল:</b> Preposition-এ Adjective+Prep combo সবচেয়ে বেশি আসে। এই table-এর ★★★ গুলো না জানলে পুরো ৫ নম্বর পাওয়া কঠিন। Completing Sentence-এ Box phrase ১০টি সম্পূর্ণ মুখস্থ রাখো — প্রতি বছরই এগুলোই আসে।
+  </div>
+</div>
+
+<!-- PREPOSITION TAB -->
+<div id="prep" class="sec">
+  <div class="freq"><b>এই ট্যাবে:</b> Last 10 years-এ বারবার আসা সব Preposition rule — Adjective+Prep, Verb+Prep, Noun+Prep, এবং Context-based rules সহ সম্পূর্ণ তালিকা।</div>
+
+  <div class="sec-h">গ্রুপ ১ — Adjective + Preposition (সর্বোচ্চ গুরুত্বপূর্ণ)</div>
+  <div class="card">
+    <div class="badge badge-red">প্রায় প্রতি বছরই আসে — TO দিয়ে শেষ হওয়া Adjective</div>
+    <table class="big-table">
+      <tr><th>Adjective</th><th>Prep</th><th>উদাহরণ</th></tr>
+      <tr><td>accustomed, used, habituated</td><td><b class="hl">to</b></td><td>He is accustomed <b class="hl">to</b> hard work.</td></tr>
+      <tr><td>addicted, devoted, dedicated</td><td><b class="hl">to</b></td><td>She is addicted <b class="hl">to</b> social media.</td></tr>
+      <tr><td>averse, indifferent, opposed</td><td><b class="hl">to</b></td><td>He is not averse <b class="hl">to</b> hard work.</td></tr>
+      <tr><td>married, committed, attached</td><td><b class="hl">to</b></td><td>He was married <b class="hl">to</b> a noble lady.</td></tr>
+      <tr><td>useful, beneficial, helpful</td><td><b class="hl">to</b></td><td>Trees are useful <b class="hl">to</b> us.</td></tr>
+      <tr><td>responsible, accountable</td><td><b class="hl">for/to</b></td><td>He is responsible <b class="hl">for</b> this work.</td></tr>
+      <tr><td>eager, ready, prepared</td><td><b class="hl">for/to</b></td><td>He is eager <b class="hl">for</b> success.</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="badge badge-red">প্রায় প্রতি বছরই আসে — OF দিয়ে শেষ হওয়া Adjective</div>
+    <table class="big-table">
+      <tr><th>Adjective</th><th>Prep</th><th>উদাহরণ</th></tr>
+      <tr><td>devoid, deprived, bereft</td><td><b class="hl">of</b></td><td>He is devoid <b class="hl">of</b> honesty.</td></tr>
+      <tr><td>proud, fond, aware, conscious</td><td><b class="hl">of</b></td><td>They are proud <b class="hl">of</b> their country.</td></tr>
+      <tr><td>frightened, afraid, scared</td><td><b class="hl">of</b></td><td>She is afraid <b class="hl">of</b> darkness.</td></tr>
+      <tr><td>capable, worthy, guilty</td><td><b class="hl">of</b></td><td>He is capable <b class="hl">of</b> doing this.</td></tr>
+      <tr><td>short, full, tired</td><td><b class="hl">of</b></td><td>Life is full <b class="hl">of</b> joys and sorrows.</td></tr>
+      <tr><td>doubtful, uncertain, sure</td><td><b class="hl">of/about</b></td><td>He is not sure <b class="hl">of</b> his success.</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="badge badge-amber">প্রায়ই আসে — IN দিয়ে শেষ হওয়া Adjective</div>
+    <table class="big-table">
+      <tr><th>Adjective</th><th>Prep</th><th>উদাহরণ</th></tr>
+      <tr><td>interested, absorbed, engaged</td><td><b class="hl">in</b></td><td>He is interested <b class="hl">in</b> reading books.</td></tr>
+      <tr><td>inherent, involved, skilled</td><td><b class="hl">in</b></td><td>Patriotism is inherent <b class="hl">in</b> man.</td></tr>
+      <tr><td>rich, poor (comparative)</td><td><b class="hl">in</b></td><td>Bangladesh is rich <b class="hl">in</b> rivers.</td></tr>
+      <tr><td>experienced, trained</td><td><b class="hl">in</b></td><td>He is experienced <b class="hl">in</b> teaching.</td></tr>
+    </table>
+  </div>
+
+  <div class="sec-h">গ্রুপ ২ — Verb + Preposition (Last 10 Years-এ বারবার আসা)</div>
+  <div class="card">
+    <table class="big-table">
+      <tr><th>Verb</th><th>Prep</th><th>উদাহরণ</th></tr>
+      <tr><td>cling, stick, adhere</td><td><b class="hl">to</b></td><td>He clings <b class="hl">to</b> his determination.</td></tr>
+      <tr><td>abstain, refrain, suffer</td><td><b class="hl">from</b></td><td>You should abstain <b class="hl">from</b> smoking.</td></tr>
+      <tr><td>fight, struggle, battle</td><td><b class="hl">against/for</b></td><td>They fought <b class="hl">against</b> the oppressors.</td></tr>
+      <tr><td>consist, result, succeed</td><td><b class="hl">in/of</b></td><td>Success consists <b class="hl">in</b> hard work.</td></tr>
+      <tr><td>depend, rely, insist</td><td><b class="hl">on</b></td><td>Everything depends <b class="hl">on</b> you.</td></tr>
+      <tr><td>provide, supply, equip</td><td><b class="hl">with</b></td><td>Trees provide us <b class="hl">with</b> oxygen.</td></tr>
+      <tr><td>deprive, prevent, prohibit</td><td><b class="hl">from</b></td><td>Poverty deprives them <b class="hl">from</b> education.</td></tr>
+      <tr><td>care, long, pray, look</td><td><b class="hl">for</b></td><td>None cared <b class="hl">for</b> its repair.</td></tr>
+      <tr><td>deal, meet, mix, disagree</td><td><b class="hl">with</b></td><td>He mixes <b class="hl">with</b> all kinds of people.</td></tr>
+      <tr><td>surrender, submit, yield</td><td><b class="hl">to</b></td><td>They surrendered <b class="hl">to</b> the freedom fighters.</td></tr>
+      <tr><td>break (down), break (out)</td><td><b class="hl">down / out</b></td><td>The bridge broke <b class="hl">down</b> one day.</td></tr>
+      <tr><td>swooped, pounced</td><td><b class="hl">on/upon</b></td><td>The eagle swooped <b class="hl">upon</b> its prey.</td></tr>
+      <tr><td>be born, die, believe</td><td><b class="hl">in</b></td><td>He was born <b class="hl">in</b> 1920.</td></tr>
+      <tr><td>tell on / take in</td><td><b class="hl">on/in</b></td><td>Smoking tells <b class="hl">on</b> health.</td></tr>
+    </table>
+  </div>
+
+  <div class="sec-h">গ্রুপ ৩ — Noun + Preposition (Board-এ বারবার আসে)</div>
+  <div class="card">
+    <table class="big-table">
+      <tr><th>Noun Phrase</th><th>Prep</th><th>উদাহরণ</th></tr>
+      <tr><td>love for / of</td><td><b class="hl">for/of</b></td><td>His love <b class="hl">for</b> the country is great.</td></tr>
+      <tr><td>pride in</td><td><b class="hl">in</b></td><td>They take pride <b class="hl">in</b> their motherland.</td></tr>
+      <tr><td>faith in / belief in</td><td><b class="hl">in</b></td><td>A pious man has faith <b class="hl">in</b> Allah.</td></tr>
+      <tr><td>interest in</td><td><b class="hl">in</b></td><td>He has interest <b class="hl">in</b> sports.</td></tr>
+      <tr><td>impact/effect/influence on</td><td><b class="hl">on</b></td><td>Environment plays a role <b class="hl">in</b> our life.</td></tr>
+      <tr><td>attachment to</td><td><b class="hl">to</b></td><td>He feels an attachment <b class="hl">to</b> his land.</td></tr>
+      <tr><td>in memory of</td><td><b class="hl">of</b></td><td>Built <b class="hl">in</b> memory <b class="hl">of</b> the martyrs.</td></tr>
+      <tr><td>at the age of</td><td><b class="hl">at / of</b></td><td>He received an award <b class="hl">at</b> the age <b class="hl">of</b> 29.</td></tr>
+      <tr><td>in short / in brief</td><td><b class="hl">in</b></td><td><b class="hl">In</b> short, it is called environment.</td></tr>
+      <tr><td>for example / for instance</td><td><b class="hl">for</b></td><td><b class="hl">For</b> example, the book is on the table.</td></tr>
+    </table>
+  </div>
+
+  <div class="sec-h">গ্রুপ ৪ — Context-based Rules (স্থান, সময়, বিশেষ ব্যবহার)</div>
+  <div class="card">
+    <table class="big-table">
+      <tr><th>Context</th><th>Prep</th><th>উদাহরণ</th></tr>
+      <tr><td>দেশ, শহর, ঘরের ভেতর</td><td><b class="hl">in</b></td><td>He lives <b class="hl">in</b> Dhaka. She is <b class="hl">in</b> the room.</td></tr>
+      <tr><td>নির্দিষ্ট ছোট স্থান/পয়েন্ট</td><td><b class="hl">at</b></td><td>She is <b class="hl">at</b> school. Meet me <b class="hl">at</b> the gate.</td></tr>
+      <tr><td>সমতল পৃষ্ঠের ওপরে</td><td><b class="hl">on</b></td><td>The book is <b class="hl">on</b> the table. Hump is <b class="hl">on</b> the back.</td></tr>
+      <tr><td>উপরে-নিচে কোনো কিছুর (spanning)</td><td><b class="hl">over</b></td><td>A bridge was <b class="hl">over</b> the canal.</td></tr>
+      <tr><td>বছর/মাস/ঋতু</td><td><b class="hl">in</b></td><td>He was born <b class="hl">in</b> 1920. <b class="hl">In</b> January.</td></tr>
+      <tr><td>নির্দিষ্ট সময়</td><td><b class="hl">at</b></td><td>Class starts <b class="hl">at</b> 9 o'clock.</td></tr>
+      <tr><td>নির্দিষ্ট দিন/তারিখ</td><td><b class="hl">on</b></td><td>He died <b class="hl">on</b> 27 September.</td></tr>
+      <tr><td>একটি range/duration</td><td><b class="hl">for/during</b></td><td>He studied <b class="hl">for</b> 3 hours.</td></tr>
+      <tr><td>উপকরণ দিয়ে তৈরি (দেখা যায়)</td><td><b class="hl">of</b></td><td>The ring is made <b class="hl">of</b> gold.</td></tr>
+      <tr><td>উপকরণ দিয়ে তৈরি (দেখা যায় না)</td><td><b class="hl">from</b></td><td>Wine is made <b class="hl">from</b> grapes.</td></tr>
+      <tr><td>কোনো কিছুর বিরুদ্ধে</td><td><b class="hl">against</b></td><td>They fought <b class="hl">against</b> the enemy.</td></tr>
+      <tr><td>range/speed পরিমাপ</td><td><b class="hl">ranging from...to</b></td><td>Speed ranging <b class="hl">from</b> 40 <b class="hl">to</b> 100 km/h.</td></tr>
+    </table>
+  </div>
+
+  <div class="tip"><b>মনে রাখার সহজ কৌশল:</b> কোনো Adjective দেখলে আগে চেক করো — সেটা TO গ্রুপের নাকি OF গ্রুপের। TO গ্রুপে পড়ে: অভ্যাস/আসক্তি/বিমুখতা/সমর্থন জাতীয় শব্দ। OF গ্রুপে পড়ে: বঞ্চনা/গর্ব/ভয়/যোগ্যতা জাতীয় শব্দ। IN গ্রুপে: আগ্রহ/দক্ষতা/সমৃদ্ধি।</div>
+</div>
+
+<!-- COMPLETING SENTENCE BOX TAB -->
+<div id="cs1" class="sec">
+  <div class="freq"><b>Box থেকে Phrase বসানো (Q.2) — Last 10 years-এ সবচেয়ে বেশি আসা ১৫টি phrase:</b> প্রতি বছর box-এ ১০টি থাকে। নিচের সবগুলো ভালো করে শিখলে সব সেটে common পাবে।</div>
+
+  <div class="sec-h">Phrase ১ — as if (যেন, মনে হচ্ছে)</div>
+  <div class="card">
+    <div class="badge badge-red">★★★ প্রায় প্রতি বছর আসে</div>
+    <div class="card-sub"><b>নিয়ম:</b> বাস্তবে যা সত্য নয় কিন্তু মনে হচ্ছে এমন ভাব বোঝাতে। <br>Structure: Subject + verb + <b>as if</b> + Subject + were/had + ...</div>
+    <ul class="ex">
+      <li>He acts <b class="hl">as if</b> he were a king. (সে আচরণ করে যেন সে রাজা — কিন্তু সে রাজা নয়)</li>
+      <li>She talks <b class="hl">as if</b> she had been a doctor. (সে কথা বলে যেন সে ডাক্তার ছিল)</li>
+      <li>My friend talks <b class="hl">as if</b> he were a millionaire. (বাস্তবে সে গরিব)</li>
+    </ul>
+    <div class="mini-h">⚠️ চেনার উপায়: বাক্যে "কিন্তু সত্যিটা ভিন্ন" এই ইঙ্গিত থাকলে → as if</div>
+  </div>
+
+  <div class="sec-h">Phrase ২ — lest (পাছে, যাতে না)</div>
+  <div class="card">
+    <div class="badge badge-red">★★★ সবচেয়ে বেশি আসে Clause/Phrase section-এ</div>
+    <div class="card-sub"><b>নিয়ম:</b> ভয় বা আশঙ্কা থেকে সতর্কতা বোঝাতে। <br>Structure: ... lest + Subject + should + verb (base)</div>
+    <ul class="ex">
+      <li>Walk fast <b class="hl">lest</b> you <b class="hl">should</b> miss the bus.</li>
+      <li>Study hard <b class="hl">lest</b> you <b class="hl">should</b> fail.</li>
+      <li>He ran fast <b class="hl">lest</b> he <b class="hl">should</b> be late.</li>
+    </ul>
+    <div class="mini-h">⚠️ চেনার উপায়: "পাছে না/যাতে না" — সবসময় lest + should</div>
+  </div>
+
+  <div class="sec-h">Phrase ৩ — unless (যদি না)</div>
+  <div class="card">
+    <div class="badge badge-red">★★★ প্রতি বছর আসে</div>
+    <div class="card-sub"><b>নিয়ম:</b> "যদি না" শর্ত বোঝাতে। Unless মানেই "if not"। <br>Structure: <b>Unless</b> + Subject + verb (present), Subject + will/can + verb</div>
+    <ul class="ex">
+      <li><b class="hl">Unless</b> you work hard, you will not succeed.</li>
+      <li><b class="hl">Unless</b> you are honest, nobody will trust you.</li>
+      <li>You cannot prosper in life <b class="hl">unless</b> you use your time properly.</li>
+    </ul>
+    <div class="mini-h">⚠️ মনে রেখো: Unless-এর পরে NOT ব্যবহার হয় না (কারণ unless = if not)</div>
+  </div>
+
+  <div class="sec-h">Phrase ৪ — it is high time (এখনই সময়)</div>
+  <div class="card">
+    <div class="badge badge-red">★★★ প্রতি বছর আসে</div>
+    <div class="card-sub"><b>নিয়ম:</b> "এখনই উপযুক্ত সময়" বোঝাতে। <br>Structure: <b>It is high time</b> + Subject + verb (past tense) / to + verb</div>
+    <ul class="ex">
+      <li><b class="hl">It is high time</b> we <b class="hl">took</b> steps against corruption. (past tense)</li>
+      <li><b class="hl">It is high time</b> we <b class="hl">started</b> learning English.</li>
+      <li><b class="hl">It is high time</b> <b class="warn">we practiced</b> patriotism.</li>
+    </ul>
+    <div class="mini-h">⚠️ "high time"-এর পরে verb সবসময় past tense হবে!</div>
+  </div>
+
+  <div class="sec-h">Phrase ৫ — no sooner had...than (যেই...অমনি)</div>
+  <div class="card">
+    <div class="badge badge-red">★★★ প্রতি বছর আসে</div>
+    <div class="card-sub"><b>নিয়ম:</b> দুটো কাজ একসাথে/সাথে সাথে হওয়া বোঝাতে। Inverted structure ব্যবহার হয়।<br>Structure: <b>No sooner had</b> + Sub + V3 + <b>than</b> + Sub + V2</div>
+    <ul class="ex">
+      <li><b class="hl">No sooner had</b> the teacher entered <b class="hl">than</b> the students kept quiet.</li>
+      <li><b class="hl">No sooner had</b> I heard the news <b class="hl">than</b> I ran there.</li>
+      <li><b class="hl">No sooner had</b> he got the loaf <b class="hl">than</b> the crow flew away.</li>
+    </ul>
+    <div class="mini-h">⚠️ সবসময় "No sooner had... than" — কখনো "as soon as" দিয়ে বদলাবে না এই structure-এ</div>
+  </div>
+
+  <div class="sec-h">Phrase ৬ — would you mind (আপনি কি করবেন?)</div>
+  <div class="card">
+    <div class="badge badge-amber">★★☆ প্রায়ই আসে</div>
+    <div class="card-sub"><b>নিয়ম:</b> ভদ্রভাবে কারো সাহায্য চাইতে।<br>Structure: <b>Would you mind</b> + verb+ing...</div>
+    <ul class="ex">
+      <li><b class="hl">Would you mind</b> <b class="warn">lending</b> me your phone? (lend নয়, lending)</li>
+      <li><b class="hl">Would you mind</b> <b class="warn">opening</b> the window?</li>
+      <li><b class="hl">Would you mind</b> <b class="warn">waiting</b> here for a moment?</li>
+    </ul>
+    <div class="mini-h">⚠️ Would you mind-এর পরে সবসময় verb+ing (gerund)!</div>
+  </div>
+
+  <div class="sec-h">Phrase ৭ — what if (যদি...তাহলে কী হবে?)</div>
+  <div class="card">
+    <div class="badge badge-amber">★★☆ প্রায়ই আসে</div>
+    <div class="card-sub"><b>নিয়ম:</b> অনিশ্চিত পরিস্থিতি বা ভয়ের প্রশ্ন করতে।<br>Structure: <b>What if</b> + Subject + verb...</div>
+    <ul class="ex">
+      <li><b class="hl">What if</b> we miss the bus? (যদি বাস মিস হয়ে যায়?)</li>
+      <li><b class="hl">What if</b> he wouldn't have stopped the bus?</li>
+      <li>Rina: <b class="hl">What if</b> we miss the train? Mina: We'll take a taxi.</li>
+    </ul>
+    <div class="mini-h">⚠️ চেনার উপায়: প্রশ্ন করছে, পরিণাম নিয়ে দুশ্চিন্তা আছে</div>
+  </div>
+
+  <div class="sec-h">Phrase ৮ — the + comparative...the + comparative</div>
+  <div class="card">
+    <div class="badge badge-amber">★★☆ মাঝে মাঝে আসে</div>
+    <div class="card-sub"><b>নিয়ম:</b> একটা বাড়লে আরেকটাও বাড়ে বোঝাতে।<br>Structure: <b>The + comparative</b>, <b>the + comparative</b></div>
+    <ul class="ex">
+      <li><b class="hl">The older</b> you grow, <b class="hl">the more</b> experienced you become.</li>
+      <li><b class="hl">The more</b> you read, <b class="hl">the more</b> you learn.</li>
+      <li><b class="hl">The harder</b> you work, <b class="hl">the better</b> result you get.</li>
+    </ul>
+  </div>
+
+  <div class="sec-h">Phrase ৯ — I wish (আমি যদি...হতাম)</div>
+  <div class="card">
+    <div class="badge badge-amber">★★☆ প্রায়ই আসে</div>
+    <div class="card-sub"><b>নিয়ম:</b> অসম্ভব বা অপ্রাপ্ত ইচ্ছা বোঝাতে।<br>Structure: <b>I wish</b> + Subject + were/had/could + verb</div>
+    <ul class="ex">
+      <li><b class="hl">I wish</b> I <b class="warn">were</b> a bird. (am নয়, were)</li>
+      <li><b class="hl">I wish</b> I <b class="warn">could</b> help the poor.</li>
+      <li><b class="hl">I wish</b> I <b class="warn">had</b> wings of a bird.</li>
+    </ul>
+    <div class="mini-h">⚠️ I wish-এর পরে সবসময় Past Tense বা Past Perfect!</div>
+  </div>
+
+  <div class="sec-h">Phrase ১০ — so that / in order that (যাতে)</div>
+  <div class="card">
+    <div class="badge badge-amber">★★☆</div>
+    <div class="card-sub"><b>নিয়ম:</b> উদ্দেশ্য বোঝাতে।<br>Structure: ... <b>so that</b> + Subject + can/may/could/might + verb</div>
+    <ul class="ex">
+      <li>I study hard <b class="hl">so that</b> I can pass the exam.</li>
+      <li>He took a job <b class="hl">so that</b> he could earn some money.</li>
+      <li>She came to my room <b class="hl">in order that</b> she could learn something.</li>
+    </ul>
+  </div>
+
+  <div class="tip"><b>Box Phrase মনে রাখার কৌশল:</b> as if = বাস্তবে মিথ্যা | lest = পাছে না (+ should) | unless = যদি না | it is high time = এখনই সময় (+ past) | no sooner had...than = সাথে সাথে | would you mind = ভদ্রভাবে অনুরোধ (+ ing) | I wish = অসম্ভব ইচ্ছা (+ were/could)</div>
+</div>
+
+<!-- COMPLETING SENTENCE CLAUSE TAB -->
+<div id="cs2" class="sec">
+  <div class="freq"><b>Clause/Phrase দিয়ে Completing Sentence (Q.3/4) — Last 10 years-এ সবচেয়ে বেশি আসা Structures:</b> নিচের প্রতিটি structure কমপক্ষে ৩-৫ বার বিভিন্ন board-এ এসেছে।</div>
+
+  <div class="sec-h">Structure ১ — If Clause (Conditional)</div>
+  <div class="card">
+    <div class="badge badge-red">★★★ প্রতি বছর আসে — ৩ ধরনের If Clause</div>
+    <table class="big-table">
+      <tr><th>ধরন</th><th>Structure</th><th>উদাহরণ</th></tr>
+      <tr><td>Type 1 — সম্ভব শর্ত</td><td>If + Present, will + V1</td><td>If you work hard, you <b class="hl">will succeed</b>.</td></tr>
+      <tr><td>Type 2 — অবাস্তব বর্তমান</td><td>If + Past, would + V1</td><td>If I had money, I <b class="hl">would help</b> the poor.</td></tr>
+      <tr><td>Type 3 — অতীতের অবাস্তব</td><td>If + Past Perfect, would have + V3</td><td>If I had worked hard, I <b class="hl">would have passed</b>.</td></tr>
+    </table>
+    <ul class="ex" style="margin-top:8px">
+      <li>If you maintain honesty, you <b class="hl">will be respected</b>.</li>
+      <li>If I had a camera, I <b class="hl">would take</b> some photographs.</li>
+      <li>If I had earned enough money, I <b class="hl">would have helped</b> the poor.</li>
+    </ul>
+  </div>
+
+  <div class="sec-h">Structure ২ — Though/Although (যদিও)</div>
+  <div class="card">
+    <div class="badge badge-red">★★★ প্রতি বছর আসে</div>
+    <div class="card-sub">Structure: <b>Though/Although</b> + clause, main clause (বিপরীত ফলাফল)</div>
+    <ul class="ex">
+      <li><b class="hl">Though</b> Bangladesh is a small country, <b class="warn">it has many heritage sites</b>.</li>
+      <li><b class="hl">Though</b> he was brilliant, <b class="warn">he did not score well</b>.</li>
+      <li><b class="hl">Though</b> I am poor, <b class="warn">I hate begging</b>.</li>
+    </ul>
+    <div class="mini-h">⚠️ Though-এর দুই অংশে বিপরীত ধারণা থাকবে। "but" ব্যবহার করা যাবে না।</div>
+  </div>
+
+  <div class="sec-h">Structure ৩ — so...that / too...to (এতটাই যে / এত...যে পারে না)</div>
+  <div class="card">
+    <div class="badge badge-red">★★★</div>
+    <table class="big-table">
+      <tr><th>Structure</th><th>উদাহরণ</th></tr>
+      <tr><td>so + adj/adv + <b class="hl">that</b> + clause</td><td>He is <b class="hl">so</b> tired <b class="hl">that</b> he cannot walk.</td></tr>
+      <tr><td>too + adj + <b class="hl">to</b> + verb</td><td>He is <b class="hl">too</b> weak <b class="hl">to</b> walk. (too...to = negative meaning)</td></tr>
+      <tr><td>adj + enough + <b class="hl">to</b> + verb</td><td>He is strong <b class="hl">enough to</b> lift the box.</td></tr>
+    </table>
+  </div>
+
+  <div class="sec-h">Structure ৪ — with a view to / by / in order to (উদ্দেশ্যে)</div>
+  <div class="card">
+    <div class="badge badge-amber">★★☆</div>
+    <div class="card-sub">Structure: <b>with a view to</b> + verb+ing (gerund) / <b>in order to</b> + verb (infinitive)</div>
+    <ul class="ex">
+      <li>He came here <b class="hl">with a view to</b> <b class="warn">helping</b> me. (helping — gerund)</li>
+      <li>We work hard <b class="hl">with a view to</b> <b class="warn">building</b> the nation.</li>
+      <li>She studies <b class="hl">in order to</b> <b class="warn">pass</b> the exam. (pass — infinitive)</li>
+    </ul>
+    <div class="mini-h">⚠️ "with a view to"-এর পরে সবসময় verb+ing! "to pass" নয়, "to passing"!</div>
+  </div>
+
+  <div class="sec-h">Structure ৫ — It is/was + time/long since (এটা অনেক দিন হলো)</div>
+  <div class="card">
+    <div class="badge badge-amber">★★☆</div>
+    <ul class="ex">
+      <li>It is a long time <b class="hl">since</b> we <b class="warn">met</b> last. (since-এর পরে Past Tense)</li>
+      <li>It was five years <b class="hl">since</b> we <b class="warn">last saw</b> each other.</li>
+      <li>It is long <b class="hl">since</b> I <b class="warn">visited</b> my village.</li>
+    </ul>
+  </div>
+
+  <div class="sec-h">Structure ৬ — Had I / Were I (Inverted Conditional)</div>
+  <div class="card">
+    <div class="badge badge-amber">★★☆ HSC 2023, 2024-এ এসেছে</div>
+    <div class="card-sub">Structure: <b>Had</b> + Subject + V3, Subject + would have + V3</div>
+    <ul class="ex">
+      <li><b class="hl">Had</b> I earned enough money, I <b class="warn">would have helped</b> the poor.</li>
+      <li><b class="hl">Had</b> he studied seriously, he <b class="warn">would have got</b> GPA 5.</li>
+      <li><b class="hl">Had</b> we reached earlier, we <b class="warn">would not have missed</b> the train.</li>
+    </ul>
+  </div>
+
+  <div class="sec-h">Structure ৭ — lest (পাছে না) — Clause-এ ব্যবহার</div>
+  <div class="card">
+    <div class="badge badge-red">★★★ প্রতি বছর আসে</div>
+    <ul class="ex">
+      <li>Walk fast <b class="hl">lest</b> you <b class="warn">should</b> miss the bus.</li>
+      <li>Study regularly <b class="hl">lest</b> you <b class="warn">should</b> fail the examination.</li>
+      <li>Lock the door <b class="hl">lest</b> a thief <b class="warn">should</b> enter.</li>
+    </ul>
+  </div>
+
+  <div class="sec-h">Structure ৮ — Whenever / As soon as (যখনই)</div>
+  <div class="card">
+    <div class="badge badge-amber">★★☆</div>
+    <ul class="ex">
+      <li><b class="hl">Whenever</b> he speaks in English, he makes mistakes.</li>
+      <li><b class="hl">As soon as</b> the teacher entered, the students kept quiet.</li>
+      <li><b class="hl">As soon as</b> I saw him, I informed the police.</li>
+    </ul>
+  </div>
+
+  <div class="tip"><b>Clause Completing-এর মূল কৌশল:</b> (১) আগের অংশের Tense দেখো → পরের অংশ কী Tense হবে বোঝা যাবে। (২) Though/Although দেখলে → বিপরীত কিছু লেখো। (৩) Lest দেখলে → should + base verb। (৪) Had + V3 দেখলে → would have + V3। (৫) with a view to দেখলে → verb+ing।</div>
+</div>
+
+<!-- PRACTICE PREP TAB -->
+<div id="pr1" class="sec">
+  <div class="freq"><b>Preposition Practice — ৫টি Full Set (Last 10 years-এর মতো Pattern-এ তৈরি)</b></div>
+
+  <div class="pset">
+    <div class="pset-hd">Set 1 — Patriotism (DB 2015 style)</div>
+    <div class="q-wrap">
+      <div class="q-line">Love ___(a)___ one's country is known as patriotism. Every man should have a great love ___(b)___ his country. A man devoid ___(c)___ patriotism is not a true patriot. Patriotism is inherent ___(d)___ human nature. A good patriot is always devoted ___(e)___ the service of his country. He takes pride ___(f)___ his nation. He is not addicted ___(g)___ any bad habit. He has faith ___(h)___ his country's glory. He is always ready ___(i)___ defending the country. He looks ___(j)___ the betterment of society.</div>
+      <button class="ans-btn" onclick="tog(this)">উত্তর দেখো ↓</button>
+      <div class="ans-box">
+        (a) for/of &nbsp;|&nbsp; (b) for &nbsp;|&nbsp; (c) of &nbsp;|&nbsp; (d) in &nbsp;|&nbsp; (e) to &nbsp;|&nbsp; (f) in &nbsp;|&nbsp; (g) to &nbsp;|&nbsp; (h) in &nbsp;|&nbsp; (i) for &nbsp;|&nbsp; (j) for
+      </div>
+    </div>
+  </div>
+
+  <div class="pset">
+    <div class="pset-hd">Set 2 — Honesty (DB 2023 style — Adjective+Prep)</div>
+    <div class="q-wrap">
+      <div class="q-line">A good boy is accustomed ___(a)___ hard work. He is not addicted ___(b)___ any bad thing. He is not averse ___(c)___ any hard work. He clings ___(d)___ his determination. Since he is used ___(e)___ hard work, he is not doubtful ___(f)___ his success. He is aware ___(g)___ his duties. He abstains ___(h)___ all evil deeds. He is committed ___(i)___ his goals. Such a man is always worthy ___(j)___ respect.</div>
+      <button class="ans-btn" onclick="tog(this)">উত্তর দেখো ↓</button>
+      <div class="ans-box">
+        (a) to &nbsp;|&nbsp; (b) to &nbsp;|&nbsp; (c) to &nbsp;|&nbsp; (d) to &nbsp;|&nbsp; (e) to &nbsp;|&nbsp; (f) of/about &nbsp;|&nbsp; (g) of &nbsp;|&nbsp; (h) from &nbsp;|&nbsp; (i) to &nbsp;|&nbsp; (j) of
+      </div>
+    </div>
+  </div>
+
+  <div class="pset">
+    <div class="pset-hd">Set 3 — Environment (CB 2019 / multiple boards style)</div>
+    <div class="q-wrap">
+      <div class="q-line">The environment plays an important role ___(a)___ our life. ___(b)___ short, everything ___(c)___ us including people, houses, air and water is called environment. These are the main elements ___(d)___ our environment. Ensuring a sound life, the balance ___(e)___ the natural elements is very significant. Man is now destroying the environment ___(f)___ various ways. Trees are being cut ___(g)___ at random. Smoke ___(h)___ factories pollutes air. We should be aware ___(i)___ environmental pollution. We must work ___(j)___ saving the environment.</div>
+      <button class="ans-btn" onclick="tog(this)">উত্তর দেখো ↓</button>
+      <div class="ans-box">
+        (a) in &nbsp;|&nbsp; (b) In &nbsp;|&nbsp; (c) around &nbsp;|&nbsp; (d) of &nbsp;|&nbsp; (e) of/among &nbsp;|&nbsp; (f) in &nbsp;|&nbsp; (g) down &nbsp;|&nbsp; (h) from &nbsp;|&nbsp; (i) of &nbsp;|&nbsp; (j) for/towards
+      </div>
+    </div>
+  </div>
+
+  <div class="pset">
+    <div class="pset-hd">Set 4 — Freedom fighters (Comilla Board 2025 style)</div>
+    <div class="q-wrap">
+      <div class="q-line">We got our freedom ___(a)___ the sacrifice of thousands of lives. The patriots ___(b)___ our land fought ___(c)___ the oppression of the Pakistani rulers. They took pride ___(d)___ fighting for the country. They were ready to lay down their lives ___(e)___ the sake of the motherland. They fought ___(f)___ the enemy bravely. Finally the oppressors surrendered ___(g)___ our freedom fighters. A great number ___(h)___ the sons of the land died ___(i)___ the war. We are proud ___(j)___ their sacrifice.</div>
+      <button class="ans-btn" onclick="tog(this)">উত্তর দেখো ↓</button>
+      <div class="ans-box">
+        (a) at/for &nbsp;|&nbsp; (b) of &nbsp;|&nbsp; (c) against &nbsp;|&nbsp; (d) in &nbsp;|&nbsp; (e) for &nbsp;|&nbsp; (f) against &nbsp;|&nbsp; (g) to &nbsp;|&nbsp; (h) of &nbsp;|&nbsp; (i) in/during &nbsp;|&nbsp; (j) of
+      </div>
+    </div>
+  </div>
+
+  <div class="pset">
+    <div class="pset-hd">Set 5 — Camel (Dhaka Board 2022 style)</div>
+    <div class="q-wrap">
+      <div class="q-line">Camels are one of the few animals that can live ___(a)___ a desert. Camels have humps ___(b)___ their backs. They store fat ___(c)___ these humps. Camels are as useful ___(d)___ the people of the desert as buffaloes are ___(e)___ the grasslands. Clothes are made ___(f)___ camel hair. Shoes are made ___(g)___ camel skin. Camels can go ___(h)___ several months without water. They live ___(i)___ the fat stored in their humps. We should be grateful ___(j)___ such useful animals.</div>
+      <button class="ans-btn" onclick="tog(this)">উত্তর দেখো ↓</button>
+      <div class="ans-box">
+        (a) in &nbsp;|&nbsp; (b) on &nbsp;|&nbsp; (c) in &nbsp;|&nbsp; (d) to &nbsp;|&nbsp; (e) to &nbsp;|&nbsp; (f) from/of &nbsp;|&nbsp; (g) of &nbsp;|&nbsp; (h) for &nbsp;|&nbsp; (i) on &nbsp;|&nbsp; (j) to/for
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRACTICE CS TAB -->
+<div id="pr2" class="sec">
+  <div class="freq"><b>Completing Sentence Practice — ৫টি করে দুই ধরনের সেট (Box + Clause)</b></div>
+
+  <div class="sec-h">Box থেকে Phrase বসানো — ৫টি Practice Set</div>
+
+  <div class="box-phrase"><b>Common Box (সব set-এ):</b> as if &nbsp;|&nbsp; lest &nbsp;|&nbsp; unless &nbsp;|&nbsp; it is high time &nbsp;|&nbsp; no sooner had...than &nbsp;|&nbsp; would you mind &nbsp;|&nbsp; what if &nbsp;|&nbsp; I wish &nbsp;|&nbsp; so that &nbsp;|&nbsp; the more...the more</div>
+
+  <div class="pset">
+    <div class="pset-hd">Box Set 1</div>
+    <div class="q-wrap">
+      <div class="q-line">(a) He is very lazy. He always acts ___ he were busy.</div>
+      <div class="q-line">(b) Keep the medicine carefully ___ children should eat it by mistake.</div>
+      <div class="q-line">(c) You will never get a good job ___ you learn English properly.</div>
+      <div class="q-line">(d) Corruption is destroying the country. ___ we stopped it.</div>
+      <div class="q-line">(e) ___ the teacher entered the class ___ the students became silent.</div>
+      <button class="ans-btn" onclick="tog(this)">উত্তর দেখো ↓</button>
+      <div class="ans-box">
+        (a) as if &nbsp;|&nbsp; (b) lest &nbsp;|&nbsp; (c) unless &nbsp;|&nbsp; (d) It is high time &nbsp;|&nbsp; (e) No sooner had...than
+      </div>
+    </div>
+  </div>
+
+  <div class="pset">
+    <div class="pset-hd">Box Set 2</div>
+    <div class="q-wrap">
+      <div class="q-line">(a) ___ the bus broke down? We would miss the exam.</div>
+      <div class="q-line">(b) She is very poor. ___ I could help her financially.</div>
+      <div class="q-line">(c) He studies hard ___ he can get GPA-5.</div>
+      <div class="q-line">(d) ___ closing the window? It's getting cold inside.</div>
+      <div class="q-line">(e) ___ you read, ___ you learn. Knowledge has no limit.</div>
+      <button class="ans-btn" onclick="tog(this)">উত্তর দেখো ↓</button>
+      <div class="ans-box">
+        (a) What if &nbsp;|&nbsp; (b) I wish &nbsp;|&nbsp; (c) so that &nbsp;|&nbsp; (d) Would you mind &nbsp;|&nbsp; (e) The more...the more
+      </div>
+    </div>
+  </div>
+
+  <div class="pset">
+    <div class="pset-hd">Box Set 3</div>
+    <div class="q-wrap">
+      <div class="q-line">(a) He talks ___ he knew everything. But he knows nothing.</div>
+      <div class="q-line">(b) Walk carefully ___ you should fall on the wet floor.</div>
+      <div class="q-line">(c) You cannot get a scholarship ___ you work harder.</div>
+      <div class="q-line">(d) Child marriage is ruining lives. ___ we stopped it completely.</div>
+      <div class="q-line">(e) ___ she heard the good news ___ she burst into tears of joy.</div>
+      <button class="ans-btn" onclick="tog(this)">উত্তর দেখো ↓</button>
+      <div class="ans-box">
+        (a) as if &nbsp;|&nbsp; (b) lest &nbsp;|&nbsp; (c) unless &nbsp;|&nbsp; (d) It is high time &nbsp;|&nbsp; (e) No sooner had...than
+      </div>
+    </div>
+  </div>
+
+  <div class="pset">
+    <div class="pset-hd">Box Set 4</div>
+    <div class="q-wrap">
+      <div class="q-line">(a) Environmental pollution is rising rapidly. ___ we took steps.</div>
+      <div class="q-line">(b) ___ the accident occurred ___ people gathered around.</div>
+      <div class="q-line">(c) He always behaves ___ he were the boss here. Actually he is a junior employee.</div>
+      <div class="q-line">(d) Save your money carefully ___ you should face trouble later.</div>
+      <div class="q-line">(e) You will never improve ___ you practice daily.</div>
+      <button class="ans-btn" onclick="tog(this)">উত্তর দেখো ↓</button>
+      <div class="ans-box">
+        (a) It is high time &nbsp;|&nbsp; (b) No sooner had...than &nbsp;|&nbsp; (c) as if &nbsp;|&nbsp; (d) lest &nbsp;|&nbsp; (e) unless
+      </div>
+    </div>
+  </div>
+
+  <div class="pset">
+    <div class="pset-hd">Box Set 5</div>
+    <div class="q-wrap">
+      <div class="q-line">(a) ___ we lost electricity? How would we finish the exam?</div>
+      <div class="q-line">(b) ___ I were a doctor. I would treat the poor for free.</div>
+      <div class="q-line">(c) He works two jobs ___ he can support his family.</div>
+      <div class="q-line">(d) ___ lending me your pen? Mine ran out of ink.</div>
+      <div class="q-line">(e) ___ you practice, ___ confident you will become.</div>
+      <button class="ans-btn" onclick="tog(this)">উত্তর দেখো ↓</button>
+      <div class="ans-box">
+        (a) What if &nbsp;|&nbsp; (b) I wish &nbsp;|&nbsp; (c) so that &nbsp;|&nbsp; (d) Would you mind &nbsp;|&nbsp; (e) The more...the more
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="sec-h">Clause/Phrase দিয়ে Completing — ৫টি Practice Set</div>
+
+  <div class="pset">
+    <div class="pset-hd">Clause Set 1 (Dhaka Board 2024 style)</div>
+    <div class="q-wrap">
+      <div class="q-line">(a) Trees are essential for our existence. So, we should ___</div>
+      <div class="q-line">(b) Though Bangladesh is a small country, ___</div>
+      <div class="q-line">(c) The exam will start soon. Walk fast lest ___</div>
+      <div class="q-line">(d) He came to me with a view to ___</div>
+      <div class="q-line">(e) If you had worked hard in school, ___</div>
+      <button class="ans-btn" onclick="tog(this)">উত্তর দেখো ↓</button>
+      <div class="ans-box">
+        (a) plant more trees and protect the environment<br>
+        (b) it has many natural resources and heritage sites<br>
+        (c) you should miss it / you should be late<br>
+        (d) seeking my help / asking for advice<br>
+        (e) you would have got a good result
+      </div>
+    </div>
+  </div>
+
+  <div class="pset">
+    <div class="pset-hd">Clause Set 2 (Cumilla Board 2024 style)</div>
+    <div class="q-wrap">
+      <div class="q-line">(a) Corruption is a great problem. It is high time ___</div>
+      <div class="q-line">(b) English is important. I wish ___</div>
+      <div class="q-line">(c) He is walking slowly lest ___</div>
+      <div class="q-line">(d) Time once lost never returns. Unless you use time properly, ___</div>
+      <div class="q-line">(e) Had I known his address, ___</div>
+      <button class="ans-btn" onclick="tog(this)">উত্তর দেখো ↓</button>
+      <div class="ans-box">
+        (a) we took effective steps against corruption<br>
+        (b) I could speak English fluently<br>
+        (c) he should fall on the road<br>
+        (d) you cannot prosper in life<br>
+        (e) I would have contacted him
+      </div>
+    </div>
+  </div>
+
+  <div class="pset">
+    <div class="pset-hd">Clause Set 3 (Mymensingh Board 2024 style)</div>
+    <div class="q-wrap">
+      <div class="q-line">(a) Patriotism is a noble virtue. It is high time ___</div>
+      <div class="q-line">(b) Hasan got GPA 4.50. Had he studied seriously, ___</div>
+      <div class="q-line">(c) Those who waste time ___</div>
+      <div class="q-line">(d) Ayesha studies hard so that ___</div>
+      <div class="q-line">(e) The man walked very slowly lest ___</div>
+      <button class="ans-btn" onclick="tog(this)">উত্তর দেখো ↓</button>
+      <div class="ans-box">
+        (a) we practiced patriotism in real life<br>
+        (b) he would have got GPA 5.00<br>
+        (c) suffer in the long run / cannot succeed<br>
+        (d) she can secure GPA-5 in the exam<br>
+        (e) he should fall down on the road
+      </div>
+    </div>
+  </div>
+
+  <div class="pset">
+    <div class="pset-hd">Clause Set 4 (Rajshahi Board style)</div>
+    <div class="q-wrap">
+      <div class="q-line">(a) I cannot recall his face. It is a long time since ___</div>
+      <div class="q-line">(b) She came to the hospital with a view to ___</div>
+      <div class="q-line">(c) Though he tried very hard, ___</div>
+      <div class="q-line">(d) The box is very heavy. He is strong enough ___</div>
+      <div class="q-line">(e) He was so angry that ___</div>
+      <button class="ans-btn" onclick="tog(this)">উত্তর দেখো ↓</button>
+      <div class="ans-box">
+        (a) we last met / I saw him<br>
+        (b) seeing a doctor / getting treatment<br>
+        (c) he could not succeed in the exam<br>
+        (d) to lift it / to carry it alone<br>
+        (e) he could not speak a word
+      </div>
+    </div>
+  </div>
+
+  <div class="pset">
+    <div class="pset-hd">Clause Set 5 (All Board Mixed style)</div>
+    <div class="q-wrap">
+      <div class="q-line">(a) We are a free nation now. 1971 is the year when ___</div>
+      <div class="q-line">(b) Whenever my uncle visits us, ___</div>
+      <div class="q-line">(c) No sooner had I heard the accident news ___</div>
+      <div class="q-line">(d) I was too tired ___</div>
+      <div class="q-line">(e) Unless we plant more trees, ___</div>
+      <button class="ans-btn" onclick="tog(this)">উত্তর দেখো ↓</button>
+      <div class="ans-box">
+        (a) we achieved our independence<br>
+        (b) he brings gifts for everyone<br>
+        (c) than I rushed to the hospital<br>
+        (d) to continue working / to walk any further<br>
+        (e) the environment will be destroyed / we will suffer from natural disasters
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+function showTab(id){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+function tog(btn){
+  const box=btn.nextElementSibling;
+  const showing=box.classList.contains('show');
+  box.classList.toggle('show');
+  btn.textContent=showing?'উত্তর দেখো ↓':'উত্তর লুকাও ↑';
+}
+// Render rank chart
+const phrases=[
+  {name:'as if',pct:95},
+  {name:'lest',pct:95},
+  {name:'unless',pct:92},
+  {name:'it is high time',pct:90},
+  {name:'no sooner had...than',pct:88},
+  {name:'would you mind',pct:82},
+  {name:'I wish',pct:80},
+  {name:'so that / in order that',pct:78},
+  {name:'what if',pct:72},
+  {name:'the more...the more',pct:65},
+  {name:'had better',pct:60},
+  {name:'would rather',pct:58},
+  {name:'as soon as',pct:55},
+  {name:'there',pct:52},
+  {name:'let alone',pct:50},
+];
+const c=document.getElementById('rankChart');
+c.innerHTML=phrases.map((p,i)=>`<div class="rank-row">
+  <span class="rank-n">#${i+1}</span>
+  <span style="font-size:13px;min-width:160px">${p.name}</span>
+  <div class="rank-bar"><div class="rank-fill" style="width:${p.pct}%"></div></div>
+  <span class="rank-pct">${p.pct}%</span>
+</div>`).join('');
+</script>
